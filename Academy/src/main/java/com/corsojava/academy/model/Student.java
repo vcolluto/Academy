@@ -27,7 +27,7 @@ public class Student {
 	private String email;
 
 	@ManyToOne
-	@JoinColumn(name="course_id", nullable = false)
+	@JoinColumn(name="course_id", nullable = true)
 	private Course course;
 	
 	public int getId() {
