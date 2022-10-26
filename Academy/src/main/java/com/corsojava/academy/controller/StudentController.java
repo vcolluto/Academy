@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,7 @@ public class StudentController {
 
 	@GetMapping("/students")	//GET /api/students
 	public List<Student> getStudents() {
-		return (List<Student>) studentRepository.findAll();
+		return (List<Student>) studentRepository.findAll(Sort.by("lastName").and(Sort.by("firstName")));
 	}
 	
 	@GetMapping("/studentsbylastname")	//GET /api/studentsbylastname?lastname=Rossi
@@ -56,8 +57,15 @@ public class StudentController {
 	
 	@PostMapping("/students")	//POST /api/students   (CREAZIONE NUOVO STUDENTE)
 	public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-		return new ResponseEntity<Student>(
-				studentRepository.save(student), HttpStatus.CREATED);
+		
+				try {
+					return new ResponseEntity<Student>(
+						studentRepository.save(student), HttpStatus.CREATED);
+				} catch (Exception e) {
+					return new ResponseEntity<Student>(
+						(Student) null, HttpStatus.EXPECTATION_FAILED);
+				}
+				
 	}
 	
 	@PutMapping("/students/{studentId}")  //PUT /api/students/3
